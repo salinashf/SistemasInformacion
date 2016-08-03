@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <f:facet name="first">
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+            <title>Sistemas Informacion</title>
+        </f:facet>
+        <h:outputStylesheet library="css" name="theme.css" />
+        <h:outputStylesheet library="css" name="components.css" />
+        <h:outputStylesheet library="css" name="showcase.css" />
+        <h:outputStylesheet library="css" name="perfect-scrollbar.css" />
+        <h:outputStylesheet library="css" name="nanoscroller.css" /> 
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVvfNY7nucLpK0BriRaCGT0YSAtf2LwcM" type="text/javascript"></script>
+        <script type="text/javascript">
+            var currentMarker = null;
+            function handlePointClick(event) {
+                if (currentMarker === null) {
+                    document.getElementById('lat').value = event.latLng.lat();
+                    document.getElementById('lng').value = event.latLng.lng();
+                    currentMarker = new google.maps.Marker({
+                        position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()),
+                        draggable: true
+                    });
+                    PF('map').addOverlay(currentMarker);
+                    PF('dlg').show();
+                }
+            }
+            function markerAddComplete() {
+                var title = document.getElementById('title');
+                currentMarker.setTitle(title.value);
+                title.value = "";
+
+                currentMarker = null;
+                PF('dlg').hide();
+            }
+            function markerRemoveComplete() {
+                $("#frmMapa").submit();
+            }
+            function cancel() {
+                PF('dlg').hide();
+                currentMarker.setMap(null);
+                currentMarker = null;
+                return false;
+            }
+        </script> 
+        <style type="text/css">
+
+            .btn-separator:after {
+                content: ' ';
+                display: block;
+                float: left;
+                background: #ADADAD;
+                margin: 0 10px;
+                height: 10px;
+                width: 1px;
+            }
+            .panel-heading.pseudo:before {
+                position: absolute;
+                top: -1px;
+                bottom: -1px;
+                left: 0;
+                content: " ";
+                display: block;
+                width: 4px;
+                background-color: blue;
+            }
+            ul li, ul li a{
+
+                display:block;
+                width:22%;
+                height:100px;
+                text-align:center;
+                background-position:0 0;
+            }
+
+            ul li{
+
+                float:left;
+            }
+
+            /* roll over - move the background image by the height of the button (100px) */
+            ul li a:hover{ background-position:0 -100px; }
+
+            /* active state - move the background image by twice height of the button (200px) */
+            ul li a.active, ul li a.active:hover{ background-position:0 -200px; }
+
+            /* define each button (background image and text position) */
+            ul li a.dashboard
+            {
+                /*background-image:url(images/dashboard.png); /* define image url */
+                padding-top:40px; /* position the text using a combination of padding / height) */
+                height: 60px;
+
+            }
+            ul li a.products
+            {
+                /*background-image:url(images/products.png); /* define image url */
+                padding-top:30px; /* position the text using a combination of padding / height) */
+                height: 70px;
+
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+
+        <p:layout  fullPage="true" id="layoutMain">
+
+            <p:layoutUnit position="north"  id="layoutMainHeader" size="120"  resizable="false" closable="false" collapsible="true"> 
+                <ul style="background-color: #006de5">
+                    <li><div class=""><h:graphicImage width="300px" height="80px" library="images"  value="#{resource['images:logo_uisrael-08.png']}"/> </div></li>
+                    <li><div class="panel-heading pseudo"><h1> SISTEMAS DE INFORMACION</h1> </div></li>
+                </ul>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" id="layoutMainCenter" >
+                <f:facet name="header">
+                    <h:form  id ="frmMapaHeader">
+                        <p:commandButton value="Actualizar"  update=":frmMapa:gmap"  /> 
+                    </h:form>
+                </f:facet>
+
+                <f:facet name="footer">
+                    <h:form  id ="frmMapFooter">
+
+                        <p:slider for="txtZomm">
+                            <p:ajax event="slideEnd" listener="#{addMarkersView.onSlideEndGmap}" update=":messages txtZomm :frmMapa:gmap"  />
+                        </p:slider>
+                        <h:outputText id="txtZomm" value="#{addMarkersView.zommGmap}" />
+
+                    </h:form>
+                </f:facet>
+                <p:growl id="messages" showDetail="true" life="9000" />
+                <h:form  id ="frmMapa">
+                    <p:gmap   id="gmap" center="-0.177061,-78.477079"  zoom="#{addMarkersView.zommGmap}" type="ROADMAP" style="width:100%;height:700px"  model="#{addMarkersView.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map"  >
+                        <p:ajax event="markerDrag"  listener="#{addMarkersView.onMarkerDrag}" update=":messages" /> 
+                        <p:ajax event="overlaySelect" listener="#{addMarkersView.onMarkerSelect}"   />
+                        <p:gmapInfoWindow id="infoWindowCon" >
+                            <p:outputPanel style="text-align: center; display: block; margin: auto">
+                                <p:panelGrid columns="2" >
+                                    <h:outputText value="Key:"  />
+                                    <h:outputText id="idKey" value=" #{addMarkersView.markerCurresnt.data.point_ID}"  />
+                                    <h:outputText value="Nombre:"  />
+                                    <h:outputText id="idTitle" value=" #{addMarkersView.markerCurresnt.title} "  />
+                                    <h:outputText value="Descripcion:"  />
+                                    <h:outputText id="iddesc" value=" #{addMarkersView.markerCurresnt.data.description}"  />
+                                    <h:outputText value="Latitud:"  />
+                                    <h:outputText id="idLat" value=" #{addMarkersView.markerCurresnt.latlng.lat}"  />
+                                    <h:outputText value="Longitud:"  />
+                                    <h:outputText id="idLng" value=" #{addMarkersView.markerCurresnt.latlng.lng}"  />
+                                    <p:commandLink id="ajax"   update="gmap" actionListener="#{addMarkersView.removeMarket}">
+                                        <h:outputText value="Eliminar Punto " />
+                                    </p:commandLink>
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:gmapInfoWindow>
+                    </p:gmap>
+                </h:form>
+                <p:dialog widgetVar="dlg"  showEffect="fade" closable="false" header="Ingrese Punto" resizable="false"> 
+                    <h:form prependId="false">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="title" value="Etiqueta:" />
+                            <p:inputText id="title" value="#{addMarkersView.title}" />
+                            <h:outputLabel for="txtDesc" value="Descripcion:" />
+                            <p:inputText id="txtDesc" value="#{addMarkersView.descripcion}" required="true"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Agregar" actionListener="#{addMarkersView.addMarker}" update=":messages :frmMapa:gmap " oncomplete="markerAddComplete()" />
+                                <p:commandButton value="Cancelar" onclick="return cancel()" />
+                            </f:facet>
+                        </h:panelGrid>
+                        <h:inputHidden id="lat" value="#{addMarkersView.lat}" />
+                        <h:inputHidden id="lng" value="#{addMarkersView.lng}" />
+                    </h:form>
+                </p:dialog>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+
