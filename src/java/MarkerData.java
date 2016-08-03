@@ -13,8 +13,6 @@ public class MarkerData implements Serializable{
         this.point_ID = point_ID;
         
     }
-    
-
      MarkerData(int _pointID , String _descripcion) {
         this.description = _descripcion ;
         this.point_ID=  _pointID;

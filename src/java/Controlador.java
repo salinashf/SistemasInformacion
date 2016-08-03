@@ -25,7 +25,7 @@ import com.itemacode.utilidades.conexion.BaseConexion;
 import org.primefaces.event.SlideEndEvent;
 
 
-@ManagedBean(name = "addMarkersView")
+@ManagedBean(name = "marcadores")
 @ViewScoped
 public class Controlador implements Serializable {
 

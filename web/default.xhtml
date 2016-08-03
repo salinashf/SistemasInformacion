@@ -128,31 +128,31 @@
                     <h:form  id ="frmMapFooter">
 
                         <p:slider for="txtZomm">
-                            <p:ajax event="slideEnd" listener="#{addMarkersView.onSlideEndGmap}" update=":messages txtZomm :frmMapa:gmap"  />
+                            <p:ajax event="slideEnd" listener="#{marcadores.onSlideEndGmap}" update=":messages txtZomm :frmMapa:gmap"  />
                         </p:slider>
-                        <h:outputText id="txtZomm" value="#{addMarkersView.zommGmap}" />
+                        <h:outputText id="txtZomm" value="#{marcadores.zommGmap}" />
 
                     </h:form>
                 </f:facet>
                 <p:growl id="messages" showDetail="true" life="9000" />
                 <h:form  id ="frmMapa">
-                    <p:gmap   id="gmap" center="-0.177061,-78.477079"  zoom="#{addMarkersView.zommGmap}" type="ROADMAP" style="width:100%;height:700px"  model="#{addMarkersView.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map"  >
-                        <p:ajax event="markerDrag"  listener="#{addMarkersView.onMarkerDrag}" update=":messages" /> 
-                        <p:ajax event="overlaySelect" listener="#{addMarkersView.onMarkerSelect}"   />
+                    <p:gmap   id="gmap" center="-0.177061,-78.477079"  zoom="#{marcadores.zommGmap}" type="ROADMAP" style="width:100%;height:700px"  model="#{marcadores.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map"  >
+                        <p:ajax event="markerDrag"  listener="#{marcadores.onMarkerDrag}" update=":messages" /> 
+                        <p:ajax event="overlaySelect" listener="#{marcadores.onMarkerSelect}"   />
                         <p:gmapInfoWindow id="infoWindowCon" >
                             <p:outputPanel style="text-align: center; display: block; margin: auto">
                                 <p:panelGrid columns="2" >
                                     <h:outputText value="Key:"  />
-                                    <h:outputText id="idKey" value=" #{addMarkersView.markerCurresnt.data.point_ID}"  />
+                                    <h:outputText id="idKey" value=" #{marcadores.markerCurresnt.data.point_ID}"  />
                                     <h:outputText value="Nombre:"  />
-                                    <h:outputText id="idTitle" value=" #{addMarkersView.markerCurresnt.title} "  />
+                                    <h:outputText id="idTitle" value=" #{marcadores.markerCurresnt.title} "  />
                                     <h:outputText value="Descripcion:"  />
-                                    <h:outputText id="iddesc" value=" #{addMarkersView.markerCurresnt.data.description}"  />
+                                    <h:outputText id="iddesc" value=" #{marcadores.markerCurresnt.data.description}"  />
                                     <h:outputText value="Latitud:"  />
-                                    <h:outputText id="idLat" value=" #{addMarkersView.markerCurresnt.latlng.lat}"  />
+                                    <h:outputText id="idLat" value=" #{marcadores.markerCurresnt.latlng.lat}"  />
                                     <h:outputText value="Longitud:"  />
-                                    <h:outputText id="idLng" value=" #{addMarkersView.markerCurresnt.latlng.lng}"  />
-                                    <p:commandLink id="ajax"   update="gmap" actionListener="#{addMarkersView.removeMarket}">
+                                    <h:outputText id="idLng" value=" #{marcadores.markerCurresnt.latlng.lng}"  />
+                                    <p:commandLink id="ajax"   update="gmap" actionListener="#{marcadores.removeMarket}">
                                         <h:outputText value="Eliminar Punto " />
                                     </p:commandLink>
                                 </p:panelGrid>
@@ -164,16 +164,16 @@
                     <h:form prependId="false">
                         <h:panelGrid columns="2">
                             <h:outputLabel for="title" value="Etiqueta:" />
-                            <p:inputText id="title" value="#{addMarkersView.title}" />
+                            <p:inputText id="title" value="#{marcadores.title}" />
                             <h:outputLabel for="txtDesc" value="Descripcion:" />
-                            <p:inputText id="txtDesc" value="#{addMarkersView.descripcion}" required="true"/>
+                            <p:inputText id="txtDesc" value="#{marcadores.descripcion}" required="true"/>
                             <f:facet name="footer">
-                                <p:commandButton value="Agregar" actionListener="#{addMarkersView.addMarker}" update=":messages :frmMapa:gmap " oncomplete="markerAddComplete()" />
+                                <p:commandButton value="Agregar" actionListener="#{marcadores.addMarker}" update=":messages :frmMapa:gmap " oncomplete="markerAddComplete()" />
                                 <p:commandButton value="Cancelar" onclick="return cancel()" />
                             </f:facet>
                         </h:panelGrid>
-                        <h:inputHidden id="lat" value="#{addMarkersView.lat}" />
-                        <h:inputHidden id="lng" value="#{addMarkersView.lng}" />
+                        <h:inputHidden id="lat" value="#{marcadores.lat}" />
+                        <h:inputHidden id="lng" value="#{marcadores.lng}" />
                     </h:form>
                 </p:dialog>
             </p:layoutUnit>
